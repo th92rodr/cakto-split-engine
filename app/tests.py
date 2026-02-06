@@ -91,3 +91,18 @@ def test_rounding_remainder_goes_to_highest_percent(db):
 
     assert result.outbox_event.type == "payment_captured"
     assert result.outbox_event.status == OutboxEvent.Status.PENDING
+
+def test_idempotency_same_key_same_payload_returns_same_payment(db):
+    args = dict(
+        idempotency_key="test_idempotency",
+        amount=Decimal("100.00"),
+        currency="BRL",
+        payment_method=Payment.PaymentMethod.PIX,
+        installments=1,
+        splits=[SplitInput(recipient_id="producer_1", role="producer", percent=100)],
+    )
+
+    result1 = PaymentService.confirm_payment(**args)
+    result2 = PaymentService.confirm_payment(**args)
+
+    assert result1.payment_id == result2.payment_id
