@@ -1,7 +1,8 @@
+import pytest
 from decimal import Decimal
 
 from app.models import Payment, OutboxEvent
-from app.services import PaymentService, SplitInput
+from app.services import PaymentService, SplitInput, IdempotencyConflict
 
 def test_pix_zero_fee_single_split(db):
     result = PaymentService.confirm_payment(
@@ -106,3 +107,23 @@ def test_idempotency_same_key_same_payload_returns_same_payment(db):
     result2 = PaymentService.confirm_payment(**args)
 
     assert result1.payment_id == result2.payment_id
+
+def test_idempotency_conflict_on_different_payload(db):
+    PaymentService.confirm_payment(
+        idempotency_key="idem-conflict",
+        amount=Decimal("100.00"),
+        currency="BRL",
+        payment_method=Payment.PaymentMethod.PIX,
+        installments=1,
+        splits=[SplitInput(recipient_id="producer_1", role="producer", percent=100)],
+    )
+
+    with pytest.raises(IdempotencyConflict):
+        PaymentService.confirm_payment(
+            idempotency_key="idem-conflict",
+            amount=Decimal("200.00"),
+            currency="BRL",
+            payment_method=Payment.PaymentMethod.PIX,
+            installments=1,
+            splits=[SplitInput(recipient_id="producer_1", role="producer", percent=100)],
+        )
