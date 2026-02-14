@@ -184,13 +184,13 @@ Caso haja empate de percentuais, o primeiro recebedor da lista (ordem de entrada
 - O payload é hashado e armazenado junto ao pagamento
 - Requisições repetidas:
 
-  - retornam o mesmo resultado se o payload for igual
-  - geram erro se o payload for diferente
+  - Retornam o mesmo resultado se o payload for igual
+  - Geram erro se o payload for diferente
 
 Isso evita:
 
-- pagamentos duplicados
-- efeitos colaterais em retries
+- Pagamentos duplicados
+- Efeitos colaterais em retries
 
 ---
 
@@ -213,8 +213,8 @@ Isso evita:
 
 ## Uso de IA
 
-- Foi utilizado Github Copilot para acelerar a escrita de código e testes.
-- Foi utilizado chatGPT para escrita da documentação.
+- Foi utilizado GitHub Copilot para acelerar a escrita de código e testes.
+- Foi utilizado ChatGPT para escrita da documentação.
 
 ---
 
@@ -229,7 +229,7 @@ Isso evita:
 
 ## License
 
-This project is licensed under the [MIT License](LICENSE.md).
+Este projeto está licenciado sob a [MIT License](LICENSE.md).
 
 ---
 
